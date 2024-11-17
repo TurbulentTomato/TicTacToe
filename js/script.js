@@ -1,7 +1,7 @@
 const Gameboard = (function() {
   const gameboard = [];
-  const add = (move) => {
-    gameboard.push(move);
+  const add = (move, index) => {
+    gameboard[index] = move;
   };
   const getBoard = () => {
     return [...gameboard];
@@ -9,12 +9,34 @@ const Gameboard = (function() {
   return { add, getBoard };
 })();
 
+const Game = (function() {
+  const winningPatterns =
+    ["012", "345", "678", "036",
+      "147", "258", "048", "246"];
+  const checkMove = (index) => {
+    console.log("checking")
+    if (Gameboard.getBoard()[index] !== undefined) {
+      logError();
+      return false; //denotes inavlid move
+    }
+    return true; //denotes valid move
+  };
+  const logError = () => {
+    console.log("Invalid move, space already occupied");
+  }
+  return { checkMove, logError };
+})();
+
 function createPlayer(playerName, playerToken) {
   const name = playerName;
   const token = playerToken;
   const moves = [];//stores the indices where player has played
-  const play = () => {
-    Gameboard.add(token);
+  const { checkMove } = Game;
+  const play = (index) => {
+    if (!checkMove(index)) {
+      return;
+    }
+    Gameboard.add(token, index);
     console.log(Gameboard.getBoard());
   };
   return { play };
@@ -23,17 +45,3 @@ function createPlayer(playerName, playerToken) {
 const player1 = createPlayer("P1", "X");
 const player2 = createPlayer("P2", "O");
 
-const Game = (function() {
-  const winningPatterns =
-    ["012", "345", "678", "036",
-      "147", "258", "048", "246"];
-  const checkMove = (index) => {
-    if (Gameboard.getBoard()[index] === undefined) {
-      logError();
-    }
-  }
-  const logError = () => {
-    console.log("Invalid move, space already occupied")
-  }
-  return { checkMove, logError }
-})();
