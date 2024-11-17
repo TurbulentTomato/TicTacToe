@@ -3,7 +3,10 @@ const Gameboard = (function() {
   const add = (move) => {
     gameboard.push(move);
   }
-  return { add };
+  const getBoard = () => {
+    return [...gameboard];
+  }
+  return { add, getBoard };
 })();
 
 function createPlayer(playerName, playerToken) {
