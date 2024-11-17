@@ -6,7 +6,10 @@ const Gameboard = (function() {
   const getBoard = () => {
     return [...gameboard];
   };
-  return { add, getBoard };
+  const getIndicesFilled = () => {
+    return gameboard.filter(item => item !== undefined).length;
+  };
+  return { add, getBoard, getIndicesFilled };
 })();
 
 const Game = (function() {
@@ -14,7 +17,6 @@ const Game = (function() {
     ["012", "345", "678", "036",
       "147", "258", "048", "246"];
   const checkMove = (index) => {
-    console.log("checking")
     if (Gameboard.getBoard()[index] !== undefined || index > 8) {
       logError();
       return false; //denotes inavlid move
@@ -23,20 +25,40 @@ const Game = (function() {
   };
   const logError = () => {
     console.log("Invalid move, index cannot be greater than 8 and should not be preoccupied!!");
-  }
-  return { checkMove, logError };
+  };
+  const getResult = (playedIndices, playerName) => {
+    //checks if the played moves match with any winning pattern
+    outer: for (const pattern of winningPatterns) {
+      for (const digit of pattern) {
+        if (!playedIndices.includes(Number(digit))) {
+          continue outer; /*if a digit from a winning pattern is missing
+          from playedIndices, it goes on to check for next winning pattern*/
+        }
+      }
+      console.log(`${playerName} is Winner`)
+      return;
+    }
+    if (Gameboard.getIndicesFilled() === 9) {
+      console.log("Tie!!!");
+      return;
+    }
+  };
+  return { checkMove, logError, getResult };
 })();
 
 function createPlayer(playerName, playerToken) {
   const name = playerName;
   const token = playerToken;
-  const playedIndices = [];//stores the indices where player has played
-  const { checkMove } = Game;
+  const playedIndices = []; //stores the indices where player has played
   const play = (index) => {
-    if (!checkMove(index)) {
+    if (!Game.checkMove(index)) {
       return;
     }
     Gameboard.add(token, index);
+    playedIndices.push(index);
+    if (playedIndices.length > 2) {
+      Game.getResult(...[playedIndices], name);
+    }
     console.log(Gameboard.getBoard());
   };
   return { play };
