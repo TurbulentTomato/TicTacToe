@@ -65,8 +65,6 @@ const Game = (function() {
 })();
 
 function createPlayer(playerName, playerToken, playerTurn = false) {
-  const name = playerName;
-  const token = playerToken;
   const playedIndices = []; //stores the indices where player has played
   const play = (index) => {
     if (!playerTurn) {
@@ -80,10 +78,10 @@ function createPlayer(playerName, playerToken, playerTurn = false) {
     if (!Game.checkMove(index)) {
       return;
     }
-    Gameboard.add(token, index);
+    Gameboard.add(playerToken, index);
     playedIndices.push(index);
     if (playedIndices.length > 2) {
-      Game.getResult(...[playedIndices], name);
+      Game.getResult(...[playedIndices], playerName);
     }
     Events.trigger("toggleTurn");
     console.log(Gameboard.getBoard());
