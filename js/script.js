@@ -100,3 +100,28 @@ function createPlayer(playerName, playerToken, playerTurn = false) {
 const player1 = createPlayer("P1", "X", true);
 const player2 = createPlayer("P2", "O");
 
+const DomHandler = (function() {
+  const boardContainer = document.querySelector(".board-container");
+  const createBoard = () => {
+    let i = 0;
+    let board = "";
+    while (i < 9) {
+      board += `<div class="cell" data-index="${i}">`;
+      i++;
+    }
+    renderBoard(board);
+  }
+  const renderBoard = (board) => {
+    boardContainer.innerHTML = board;
+  }
+  const bindEvents = () => {
+    boardContainer.addEventListener("click", (event) => {
+      console.log(`Hello from ${event.target.dataset["index"]}`)
+    });
+  }
+  return { createBoard, bindEvents };
+})();
+
+DomHandler.createBoard();
+DomHandler.bindEvents();
+
