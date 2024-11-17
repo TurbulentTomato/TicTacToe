@@ -15,14 +15,14 @@ const Game = (function() {
       "147", "258", "048", "246"];
   const checkMove = (index) => {
     console.log("checking")
-    if (Gameboard.getBoard()[index] !== undefined) {
+    if (Gameboard.getBoard()[index] !== undefined || index > 8) {
       logError();
       return false; //denotes inavlid move
     }
     return true; //denotes valid move
   };
   const logError = () => {
-    console.log("Invalid move, space already occupied");
+    console.log("Invalid move, index cannot be greater than 8 and should not be preoccupied!!");
   }
   return { checkMove, logError };
 })();
