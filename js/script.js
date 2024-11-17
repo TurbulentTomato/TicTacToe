@@ -23,3 +23,17 @@ function createPlayer(playerName, playerToken) {
 const player1 = createPlayer("P1", "X");
 const player2 = createPlayer("P2", "O");
 
+const Game = (function() {
+  const winningPatterns =
+    ["012", "345", "678", "036",
+      "147", "258", "048", "246"];
+  const checkMove = (index) => {
+    if (Gameboard.getBoard()[index] === undefined) {
+      logError();
+    }
+  }
+  const logError = () => {
+    console.log("Invalid move, space already occupied")
+  }
+  return { checkMove, logError }
+})();
