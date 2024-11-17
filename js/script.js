@@ -15,7 +15,7 @@ function createPlayer(playerName, playerToken) {
   const moves = [];//stores the indices where player has played
   const play = () => {
     Gameboard.add(token);
-    console.log(Gameboard.getBoard);
+    console.log(Gameboard.getBoard());
   };
   return { play };
 }
