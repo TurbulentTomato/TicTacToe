@@ -64,11 +64,15 @@ const Game = (function() {
   return { checkMove, logError, getResult, toggleEnded, getEnded, reset };
 })();
 
-function createPlayer(playerName, playerToken) {
+function createPlayer(playerName, playerToken, playerTurn = false) {
   const name = playerName;
   const token = playerToken;
   const playedIndices = []; //stores the indices where player has played
   const play = (index) => {
+    if (!playerTurn) {
+      console.log("Not your turn!")
+      return;
+    }
     if (Game.getEnded()) {
       console.log("Game has already ended");
       return;
@@ -81,15 +85,20 @@ function createPlayer(playerName, playerToken) {
     if (playedIndices.length > 2) {
       Game.getResult(...[playedIndices], name);
     }
+    Events.trigger("toggleTurn");
     console.log(Gameboard.getBoard());
   };
+  const toggleTurn = () => {
+    playerTurn = !playerTurn;
+  }
   const reset = () => {
     playedIndices.splice(0)
   };
-  Events.subscribe("gameReset", reset)
+  Events.subscribe("gameReset", reset);
+  Events.subscribe("toggleTurn", toggleTurn);
   return { play };
 }
 
-const player1 = createPlayer("P1", "X");
+const player1 = createPlayer("P1", "X", true);
 const player2 = createPlayer("P2", "O");
 
