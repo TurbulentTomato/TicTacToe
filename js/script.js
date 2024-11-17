@@ -1,7 +1,7 @@
 const Gameboard = (function() {
   const gameboard = [];
-  const add = (move, index) => {
-    gameboard[index] = move;
+  const add = (token, index) => {
+    gameboard[index] = token;
   };
   const getBoard = () => {
     return [...gameboard];
@@ -30,7 +30,7 @@ const Game = (function() {
 function createPlayer(playerName, playerToken) {
   const name = playerName;
   const token = playerToken;
-  const moves = [];//stores the indices where player has played
+  const playedIndices = [];//stores the indices where player has played
   const { checkMove } = Game;
   const play = (index) => {
     if (!checkMove(index)) {
