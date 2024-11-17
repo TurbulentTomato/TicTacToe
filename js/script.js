@@ -9,6 +9,10 @@ const Gameboard = (function() {
   const getIndicesFilled = () => {
     return gameboard.filter(item => item !== undefined).length;
   };
+  const reset = () => {
+    gameboard.splice(0);
+  };
+  Events.subscribe("gameReset", reset)
   return { add, getBoard, getIndicesFilled };
 })();
 
@@ -53,7 +57,11 @@ const Game = (function() {
   const getEnded = () => {
     return ended;
   };
-  return { checkMove, logError, getResult, toggleEnded, getEnded };
+  const reset = () => {
+    ended = false;
+    Events.trigger("gameReset");
+  };
+  return { checkMove, logError, getResult, toggleEnded, getEnded, reset };
 })();
 
 function createPlayer(playerName, playerToken) {
@@ -75,6 +83,10 @@ function createPlayer(playerName, playerToken) {
     }
     console.log(Gameboard.getBoard());
   };
+  const reset = () => {
+    playedIndices.splice(0)
+  };
+  Events.subscribe("gameReset", reset)
   return { play };
 }
 
