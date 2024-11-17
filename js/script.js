@@ -106,7 +106,7 @@ const DomHandler = (function() {
     let i = 0;
     let board = "";
     while (i < 9) {
-      board += `<div class="cell" data-index="${i}">`;
+      board += `<div class="cell" data-index="${i}"> </div>`;
       i++;
     }
     renderBoard(board);
