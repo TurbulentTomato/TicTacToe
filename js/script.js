@@ -13,6 +13,7 @@ const Gameboard = (function() {
 })();
 
 const Game = (function() {
+  let ended = false;
   const winningPatterns =
     ["012", "345", "678", "036",
       "147", "258", "048", "246"];
@@ -36,14 +37,23 @@ const Game = (function() {
         }
       }
       console.log(`${playerName} is Winner`)
+      toggleEnded();
       return;
     }
     if (Gameboard.getIndicesFilled() === 9) {
       console.log("Tie!!!");
+      toggleEnded();
       return;
     }
   };
-  return { checkMove, logError, getResult };
+  const toggleEnded = () => {
+    ended = !ended;
+    console.log(ended);
+  };
+  const getEnded = () => {
+    return ended;
+  };
+  return { checkMove, logError, getResult, toggleEnded, getEnded };
 })();
 
 function createPlayer(playerName, playerToken) {
@@ -51,6 +61,10 @@ function createPlayer(playerName, playerToken) {
   const token = playerToken;
   const playedIndices = []; //stores the indices where player has played
   const play = (index) => {
+    if (Game.getEnded()) {
+      console.log("Game has already ended");
+      return;
+    }
     if (!Game.checkMove(index)) {
       return;
     }
