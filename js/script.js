@@ -47,6 +47,7 @@ const Game = (function() {
         }
         toggleEnded();
         matchWon = true;
+        Events.trigger("increaseScore");
       }
     }
     if (Gameboard.getIndicesFilled() === 9 && !matchWon) {
@@ -104,6 +105,7 @@ const Game = (function() {
 
 function createPlayer(playerName, playerToken, playerTurn = false) {
   const playedIndices = []; //stores the indices where player has played
+  let score = 0;
   const toggleTurn = () => {
     playerTurn = !playerTurn;
   }
@@ -127,10 +129,19 @@ function createPlayer(playerName, playerToken, playerTurn = false) {
   const getPlayerName = () => {
     return playerName;
   }
+  const getPlayerScore = () => {
+    return score;
+  }
+  const increaseScore = () => {
+    if (playerTurn) {
+      score++;
+    }
+  }
   Events.subscribe("gameReset", reset);
   Events.subscribe("toggleTurn", toggleTurn);
   Events.subscribe("setPlayedIndices", setPlayedIndices)
-  return { getPlayerTurn, getPlayerToken, getPlayedIndices, getPlayerName };
+  Events.subscribe("increaseScore", increaseScore)
+  return { getPlayerTurn, getPlayerToken, getPlayedIndices, getPlayerName, getPlayerScore };
 }
 
 const DomHandler = (function() {
