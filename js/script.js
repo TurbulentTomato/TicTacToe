@@ -85,13 +85,13 @@ const Game = (function() {
   const setActivePlayer = () => {
     activePlayer = (player1.getPlayerTurn()) ? player1 : player2;
   };
-  const getActivePlayerProperty = (property) => {
-    if (typeof activePlayer[property] === "function") {
-      return activePlayer[property]();
-    }
-    return activePlayer[property];
-  }
-  return { checkMove, logError, getResult, toggleEnded, getEnded, reset, playMove, getActivePlayerProperty };
+  /* const getActivePlayerProperty = (property) => {
+     if (typeof activePlayer[property] === "function") {
+       return activePlayer[property]();
+     }
+     return activePlayer[property];
+   }*/
+  return { checkMove, logError, getResult, toggleEnded, getEnded, reset, playMove };
 })();
 
 function createPlayer(playerName, playerToken, playerTurn = false) {
@@ -140,7 +140,8 @@ const DomHandler = (function() {
     boardContainer.innerHTML = board;
   }
   const renderToken = (event) => {
-    event.target.textContent = Game.getActivePlayerProperty("getPlayerToken");
+    /*event.target.textContent = Game.getActivePlayerProperty("getPlayerToken");*/
+    event.target.textContent = Gameboard.getBoard().slice(-1)
   }
   const bindEvents = () => {
     boardContainer.addEventListener("click", (event) => {
