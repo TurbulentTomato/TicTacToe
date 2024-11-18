@@ -135,6 +135,7 @@ function createPlayer(playerName, playerToken, playerTurn = false) {
   const increaseScore = () => {
     if (playerTurn) {
       score++;
+      Events.trigger("updateScore", { score, playerName })
     }
   }
   Events.subscribe("gameReset", reset);
@@ -147,6 +148,7 @@ function createPlayer(playerName, playerToken, playerTurn = false) {
 const DomHandler = (function() {
   const boardContainer = document.querySelector(".board-container");
   const commentEl = document.querySelector(".comment-el");
+  const playerScoreEl = Array.from(document.querySelectorAll(".name+span"));
   const createBoard = () => {
     let i = 0;
     let board = "";
@@ -166,6 +168,13 @@ const DomHandler = (function() {
   const updateComment = () => {
     commentEl.textContent = Game.getResult();
   }
+  const updateScore = (scoreObj) => {
+    if (scoreObj.playerName === document.querySelector(".name").textContent) {
+      playerScoreEl[0].textContent = scoreObj.score;
+      return;
+    }
+    playerScoreEl[1].textContent = scoreObj.score;
+  }
   const bindEvents = () => {
     boardContainer.addEventListener("click", (event) => {
       if (!Game.getEnded() && Game.checkMove(event.target.dataset["index"])) {
@@ -175,6 +184,7 @@ const DomHandler = (function() {
       }
     });
   }
+  Events.subscribe("updateScore", updateScore)
   return { createBoard, bindEvents };
 })();
 
