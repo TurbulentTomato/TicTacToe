@@ -16,7 +16,10 @@ const Gameboard = (function() {
   return { add, getBoard, getIndicesFilled };
 })();
 
+const player1 = createPlayer("P1", "X", true);
+const player2 = createPlayer("P2", "O");
 const Game = (function() {
+  let activePlayer = player1;
   let ended = false;
   const winningPatterns =
     ["012", "345", "678", "036",
@@ -61,16 +64,8 @@ const Game = (function() {
     ended = false;
     Events.trigger("gameReset");
   };
-  return { checkMove, logError, getResult, toggleEnded, getEnded, reset };
-})();
-
-function createPlayer(playerName, playerToken, playerTurn = false) {
-  const playedIndices = []; //stores the indices where player has played
-  const play = (index) => {
-    if (!playerTurn) {
-      console.log("Not your turn!")
-      return;
-    }
+  const playMove = (index) => {
+    setActivePlayer();
     if (Game.getEnded()) {
       console.log("Game has already ended");
       return;
@@ -78,27 +73,71 @@ function createPlayer(playerName, playerToken, playerTurn = false) {
     if (!Game.checkMove(index)) {
       return;
     }
-    Gameboard.add(playerToken, index);
-    playedIndices.push(index);
+    Gameboard.add(activePlayer.getPlayerToken(), index);
+    Events.trigger("setPlayedIndices", index);
+    let playedIndices = activePlayer.getPlayedIndices();
     if (playedIndices.length > 2) {
-      Game.getResult(...[playedIndices], playerName);
+      Game.getResult(...[playedIndices], activePlayer.getPlayerName());
     }
     Events.trigger("toggleTurn");
     console.log(Gameboard.getBoard());
   };
+  const setActivePlayer = () => {
+    activePlayer = (player1.getPlayerTurn()) ? player1 : player2;
+  }
+  return { checkMove, logError, getResult, toggleEnded, getEnded, reset, playMove };
+})();
+
+function createPlayer(playerName, playerToken, playerTurn = false) {
+  const playedIndices = []; //stores the indices where player has played
+  /* const play = (index) => {
+     if (!playerTurn) {
+       console.log("Not your turn!")
+       return;
+     }
+     if (Game.getEnded()) {
+       console.log("Game has already ended");
+       return;
+     }
+     if (!Game.checkMove(index)) {
+       return;
+     }
+     Gameboard.add(playerToken, index);
+     playedIndices.push(index);
+     if (playedIndices.length > 2) {
+       Game.getResult(...[playedIndices], playerName);
+     }
+     Events.trigger("toggleTurn");
+     console.log(Gameboard.getBoard());
+   };*/
   const toggleTurn = () => {
     playerTurn = !playerTurn;
   }
   const reset = () => {
     playedIndices.splice(0)
-  };
+  }
+  const getPlayerTurn = () => {
+    return playerTurn;
+  }
+  const getPlayerToken = () => {
+    return playerToken;
+  }
+  const getPlayedIndices = () => {
+    return [...playedIndices]
+  }
+  const setPlayedIndices = (index) => {
+    if (playerTurn) {
+      playedIndices.push(index)
+    }
+  }
+  const getPlayerName = () => {
+    return playerName;
+  }
   Events.subscribe("gameReset", reset);
   Events.subscribe("toggleTurn", toggleTurn);
-  return { play };
+  Events.subscribe("setPlayedIndices", setPlayedIndices)
+  return { getPlayerTurn, getPlayerToken, getPlayedIndices, getPlayerName };
 }
-
-const player1 = createPlayer("P1", "X", true);
-const player2 = createPlayer("P2", "O");
 
 const DomHandler = (function() {
   const boardContainer = document.querySelector(".board-container");
