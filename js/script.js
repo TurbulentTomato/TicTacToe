@@ -13,6 +13,7 @@ const Gameboard = (function() {
     gameboard.splice(0);
   };
   Events.subscribe("gameReset", reset)
+  Events.subscribe("restart", reset)
   return { add, getBoard, getIndicesFilled };
 })();
 
@@ -75,6 +76,10 @@ const Game = (function() {
     ended = false;
     Events.trigger("gameReset");
   };
+  const restart = () => {
+    ended = false;
+    matchWon = false;
+  }
   const playMove = (index) => {
     setActivePlayer();
     if (Game.getEnded()) {
@@ -100,6 +105,7 @@ const Game = (function() {
      }
      return activePlayer[property];
    }*/
+  Events.subscribe("restart", restart)
   return { checkMove, logError, checkResult, toggleEnded, getEnded, reset, playMove, getResult };
 })();
 
@@ -142,6 +148,7 @@ function createPlayer(playerName, playerToken, playerTurn = false) {
   Events.subscribe("toggleTurn", toggleTurn);
   Events.subscribe("setPlayedIndices", setPlayedIndices)
   Events.subscribe("increaseScore", increaseScore)
+  Events.subscribe("restart", reset)
   return { getPlayerTurn, getPlayerToken, getPlayedIndices, getPlayerName, getPlayerScore };
 }
 
@@ -149,6 +156,7 @@ const DomHandler = (function() {
   const boardContainer = document.querySelector(".board-container");
   const commentEl = document.querySelector(".comment-el");
   const playerScoreEl = Array.from(document.querySelectorAll(".name+span"));
+  const restartBtn = document.querySelector(".restart-btn");
   const createBoard = () => {
     let i = 0;
     let board = "";
@@ -175,6 +183,15 @@ const DomHandler = (function() {
     }
     playerScoreEl[1].textContent = scoreObj.score;
   }
+  const restart = () => {
+    if (Gameboard.getIndicesFilled() > 0 &&
+      !Game.getEnded() &&
+      (!confirm("Are you sure you want to restart without finishing current game?"))) {
+      return;
+    }
+    createBoard();
+    Events.trigger("restart")
+  }
   const bindEvents = () => {
     boardContainer.addEventListener("click", (event) => {
       if (!Game.getEnded() && Game.checkMove(event.target.dataset["index"])) {
@@ -182,7 +199,8 @@ const DomHandler = (function() {
         renderToken(event, Number(event.target.dataset["index"]));
         updateComment();
       }
-    });
+    })
+    restartBtn.addEventListener("click", restart)
   }
   Events.subscribe("updateScore", updateScore)
   return { createBoard, bindEvents };
