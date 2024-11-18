@@ -7,9 +7,9 @@ const Events = (function() {
   const unsubscribe = (eventName, fn) => {
     events[eventName].splice(events[eventName].indexOf(fn), 1);
   };
-  const trigger = (eventName) => {
+  const trigger = (eventName, data) => {
     events[eventName]?.forEach(fn => {
-      fn(...arguments);
+      fn(data);
     })
   };
   return { subscribe, unsubscribe, trigger };
