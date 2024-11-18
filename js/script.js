@@ -77,7 +77,7 @@ const Game = (function() {
     Events.trigger("setPlayedIndices", index);
     let playedIndices = activePlayer.getPlayedIndices();
     if (playedIndices.length > 2) {
-      Game.getResult(...[playedIndices], activePlayer.getPlayerName());
+      getResult(playedIndices, activePlayer.getPlayerName());
     }
     Events.trigger("toggleTurn");
     console.log(Gameboard.getBoard());
@@ -86,6 +86,9 @@ const Game = (function() {
     activePlayer = (player1.getPlayerTurn()) ? player1 : player2;
   };
   const getActivePlayerProperty = (property) => {
+    if (typeof activePlayer[property] === "function") {
+      return activePlayer[property]();
+    }
     return activePlayer[property];
   }
   return { checkMove, logError, getResult, toggleEnded, getEnded, reset, playMove, getActivePlayerProperty };
@@ -136,9 +139,15 @@ const DomHandler = (function() {
   const renderBoard = (board) => {
     boardContainer.innerHTML = board;
   }
+  const renderToken = (event) => {
+    event.target.textContent = Game.getActivePlayerProperty("getPlayerToken");
+  }
   const bindEvents = () => {
     boardContainer.addEventListener("click", (event) => {
-      console.log(`Hello from ${event.target.dataset["index"]}`)
+      if (!Game.getEnded() && Game.checkMove(event.target.dataset["index"])) {
+        Game.playMove(Number(event.target.dataset["index"]));
+        renderToken(event);
+      }
     });
   }
   return { createBoard, bindEvents };
