@@ -84,32 +84,15 @@ const Game = (function() {
   };
   const setActivePlayer = () => {
     activePlayer = (player1.getPlayerTurn()) ? player1 : player2;
+  };
+  const getActivePlayerProperty = (property) => {
+    return activePlayer[property];
   }
-  return { checkMove, logError, getResult, toggleEnded, getEnded, reset, playMove };
+  return { checkMove, logError, getResult, toggleEnded, getEnded, reset, playMove, getActivePlayerProperty };
 })();
 
 function createPlayer(playerName, playerToken, playerTurn = false) {
   const playedIndices = []; //stores the indices where player has played
-  /* const play = (index) => {
-     if (!playerTurn) {
-       console.log("Not your turn!")
-       return;
-     }
-     if (Game.getEnded()) {
-       console.log("Game has already ended");
-       return;
-     }
-     if (!Game.checkMove(index)) {
-       return;
-     }
-     Gameboard.add(playerToken, index);
-     playedIndices.push(index);
-     if (playedIndices.length > 2) {
-       Game.getResult(...[playedIndices], playerName);
-     }
-     Events.trigger("toggleTurn");
-     console.log(Gameboard.getBoard());
-   };*/
   const toggleTurn = () => {
     playerTurn = !playerTurn;
   }
