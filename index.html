@@ -9,12 +9,59 @@
 
 <body>
   <div class="container">
+    <header>
+      <h1>Tic Tac Toe</h1>
+    </header>
 
     <main>
-      <div class="board-container">
-
+      <div class="score-board">
+        <p class="p1 player">
+          <span class="name">Player1</span>:
+          <span class="p1-score">0</span>
+        </p>
+        <p class="p2 player">
+          <span class="name">Player2</span>: <span class="p2-score">0</span>
+        </p>
       </div>
+
+      <div class="comment-box">
+        <p class="comment-el">
+          Player1's Turn
+        </p>
+      </div>
+
+      <div class="board-container">
+      </div>
+
+      <div class="button-container">
+        <!-- <button type="button">Start</button>-->
+        <button type="button">Settings</button>
+        <button type="button">Restart</button>
+      </div>
+
+      <dialog class="settings">
+        <form>
+          <label for="">
+            Player1 Name:
+            <input type="text">
+          </label>
+          <label for="">
+            Player2 Name:
+            <input type="text">
+          </label>
+          <button>Submit</button>
+        </form>
+      </dialog>
     </main>
+
+    <footer>
+      <p>
+        TurbulentTomato
+        <a href="https://github.com/TurbulentTomato">
+          <img src="files/images/github-mark.png" alt="" height="50px" width="50px">
+        </a>
+      </p>
+    </footer>
   </div>
   <script src="js/pubsub.js"></script>
   <script src="js/script.js"></script>
