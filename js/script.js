@@ -139,15 +139,15 @@ const DomHandler = (function() {
   const renderBoard = (board) => {
     boardContainer.innerHTML = board;
   }
-  const renderToken = (event) => {
+  const renderToken = (event, index) => {
     /*event.target.textContent = Game.getActivePlayerProperty("getPlayerToken");*/
-    event.target.textContent = Gameboard.getBoard().slice(-1)
+    event.target.textContent = Gameboard.getBoard()[index];
   }
   const bindEvents = () => {
     boardContainer.addEventListener("click", (event) => {
       if (!Game.getEnded() && Game.checkMove(event.target.dataset["index"])) {
         Game.playMove(Number(event.target.dataset["index"]));
-        renderToken(event);
+        renderToken(event, Number(event.target.dataset["index"]));
       }
     });
   }
