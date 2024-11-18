@@ -16,8 +16,8 @@ const Gameboard = (function() {
   return { add, getBoard, getIndicesFilled };
 })();
 
-const player1 = createPlayer("P1", "X", true);
-const player2 = createPlayer("P2", "O");
+const player1 = createPlayer("Player1", "X", true);
+const player2 = createPlayer("Player2", "O");
 const Game = (function() {
   let activePlayer = player1;
   let ended = false;
@@ -60,7 +60,7 @@ const Game = (function() {
     } else if (matchWon) {
       return `${activePlayer.getPlayerName()} Wins!!!`
     } else {
-      return "Tie"
+      return "Its a Tie!!!"
     }
   }
   const toggleEnded = () => {
@@ -99,7 +99,7 @@ const Game = (function() {
      }
      return activePlayer[property];
    }*/
-  return { checkMove, logError, checkResult, toggleEnded, getEnded, reset, playMove };
+  return { checkMove, logError, checkResult, toggleEnded, getEnded, reset, playMove, getResult };
 })();
 
 function createPlayer(playerName, playerToken, playerTurn = false) {
@@ -135,6 +135,7 @@ function createPlayer(playerName, playerToken, playerTurn = false) {
 
 const DomHandler = (function() {
   const boardContainer = document.querySelector(".board-container");
+  const commentEl = document.querySelector(".comment-el");
   const createBoard = () => {
     let i = 0;
     let board = "";
@@ -151,11 +152,15 @@ const DomHandler = (function() {
     /*event.target.textContent = Game.getActivePlayerProperty("getPlayerToken");*/
     event.target.textContent = Gameboard.getBoard()[index];
   }
+  const updateComment = () => {
+    commentEl.textContent = Game.getResult();
+  }
   const bindEvents = () => {
     boardContainer.addEventListener("click", (event) => {
       if (!Game.getEnded() && Game.checkMove(event.target.dataset["index"])) {
         Game.playMove(Number(event.target.dataset["index"]));
         renderToken(event, Number(event.target.dataset["index"]));
+        updateComment();
       }
     });
   }
