@@ -74,7 +74,9 @@ const Game = (function() {
   };
   const reset = () => {
     ended = false;
+    matchWon = false;
     Events.trigger("gameReset");
+    Events.trigger("updateScore", "reset");;
   };
   const restart = () => {
     ended = false;
@@ -116,7 +118,11 @@ function createPlayer(playerName, playerToken, playerTurn = false) {
     playerTurn = !playerTurn;
   }
   const reset = () => {
-    playedIndices.splice(0)
+    playedIndices.splice(0);
+    score = 0;
+  }
+  const restart = () => {
+    playedIndices.splice(0);
   }
   const getPlayerTurn = () => {
     return playerTurn;
@@ -148,7 +154,7 @@ function createPlayer(playerName, playerToken, playerTurn = false) {
   Events.subscribe("toggleTurn", toggleTurn);
   Events.subscribe("setPlayedIndices", setPlayedIndices)
   Events.subscribe("increaseScore", increaseScore)
-  Events.subscribe("restart", reset)
+  Events.subscribe("restart", restart)
   return { getPlayerTurn, getPlayerToken, getPlayedIndices, getPlayerName, getPlayerScore };
 }
 
@@ -157,6 +163,7 @@ const DomHandler = (function() {
   const commentEl = document.querySelector(".comment-el");
   const playerScoreEl = Array.from(document.querySelectorAll(".name+span"));
   const restartBtn = document.querySelector(".restart-btn");
+  const resetBtn = document.querySelector(".reset-btn");
   const createBoard = () => {
     let i = 0;
     let board = "";
@@ -177,6 +184,11 @@ const DomHandler = (function() {
     commentEl.textContent = Game.getResult();
   }
   const updateScore = (scoreObj) => {
+    if (scoreObj === "reset") {
+      playerScoreEl[0].textContent = 0;
+      playerScoreEl[1].textContent = 0;
+      return;
+    }
     if (scoreObj.playerName === document.querySelector(".name").textContent) {
       playerScoreEl[0].textContent = scoreObj.score;
       return;
@@ -192,6 +204,11 @@ const DomHandler = (function() {
     createBoard();
     Events.trigger("restart")
   }
+  const reset = () => {
+    Game.reset();
+    createBoard();
+    updateComment();
+  }
   const bindEvents = () => {
     boardContainer.addEventListener("click", (event) => {
       if (!Game.getEnded() && Game.checkMove(event.target.dataset["index"])) {
@@ -201,6 +218,7 @@ const DomHandler = (function() {
       }
     })
     restartBtn.addEventListener("click", restart)
+    resetBtn.addEventListener("click", reset)
   }
   Events.subscribe("updateScore", updateScore)
   return { createBoard, bindEvents };
