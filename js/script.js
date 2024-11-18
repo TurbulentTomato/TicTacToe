@@ -21,6 +21,7 @@ const player2 = createPlayer("P2", "O");
 const Game = (function() {
   let activePlayer = player1;
   let ended = false;
+  let matchWon = false;
   const winningPatterns =
     ["012", "345", "678", "036",
       "147", "258", "048", "246"];
@@ -34,25 +35,34 @@ const Game = (function() {
   const logError = () => {
     console.log("Invalid move, index cannot be greater than 8 and should not be preoccupied!!");
   };
-  const checkResult = (playedIndices, playerName) => {
+  const checkResult = (playedIndices) => {
     //checks if the played moves match with any winning pattern
-    outer: for (const pattern of winningPatterns) {
-      for (const digit of pattern) {
-        if (!playedIndices.includes(Number(digit))) {
-          continue outer; /*if a digit from a winning pattern is missing
+    if (playedIndices.length > 2) {
+      outer: for (const pattern of winningPatterns) {
+        for (const digit of pattern) {
+          if (!playedIndices.includes(Number(digit))) {
+            continue outer; /*if a digit from a winning pattern is missing
           from playedIndices, it goes on to check for next winning pattern*/
+          }
         }
+        toggleEnded();
+        matchWon = true;
       }
-      console.log(`${playerName} is Winner`)
-      toggleEnded();
-      return;
     }
-    if (Gameboard.getIndicesFilled() === 9) {
-      console.log("Tie!!!");
+    if (Gameboard.getIndicesFilled() === 9 && !matchWon) {
       toggleEnded();
-      return;
     }
+    console.log(getResult())
   };
+  const getResult = () => {
+    if (!ended) {
+      return `${activePlayer === player1 ? player2.getPlayerName() : player1.getPlayerName()}'s Turn`;
+    } else if (matchWon) {
+      return `${activePlayer.getPlayerName()} Wins!!!`
+    } else {
+      return "Tie"
+    }
+  }
   const toggleEnded = () => {
     ended = !ended;
     console.log(ended);
@@ -76,9 +86,7 @@ const Game = (function() {
     Gameboard.add(activePlayer.getPlayerToken(), index);
     Events.trigger("setPlayedIndices", index);
     let playedIndices = activePlayer.getPlayedIndices();
-    if (playedIndices.length > 2) {
-      checkResult(playedIndices, activePlayer.getPlayerName());
-    }
+    checkResult(playedIndices);
     Events.trigger("toggleTurn");
     console.log(Gameboard.getBoard());
   };
