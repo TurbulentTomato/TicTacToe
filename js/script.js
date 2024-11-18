@@ -34,7 +34,7 @@ const Game = (function() {
   const logError = () => {
     console.log("Invalid move, index cannot be greater than 8 and should not be preoccupied!!");
   };
-  const getResult = (playedIndices, playerName) => {
+  const checkResult = (playedIndices, playerName) => {
     //checks if the played moves match with any winning pattern
     outer: for (const pattern of winningPatterns) {
       for (const digit of pattern) {
@@ -77,7 +77,7 @@ const Game = (function() {
     Events.trigger("setPlayedIndices", index);
     let playedIndices = activePlayer.getPlayedIndices();
     if (playedIndices.length > 2) {
-      getResult(playedIndices, activePlayer.getPlayerName());
+      checkResult(playedIndices, activePlayer.getPlayerName());
     }
     Events.trigger("toggleTurn");
     console.log(Gameboard.getBoard());
@@ -91,7 +91,7 @@ const Game = (function() {
      }
      return activePlayer[property];
    }*/
-  return { checkMove, logError, getResult, toggleEnded, getEnded, reset, playMove };
+  return { checkMove, logError, checkResult, toggleEnded, getEnded, reset, playMove };
 })();
 
 function createPlayer(playerName, playerToken, playerTurn = false) {
