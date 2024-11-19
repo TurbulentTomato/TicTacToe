@@ -202,7 +202,8 @@ const DomHandler = (function() {
       return;
     }
     createBoard();
-    Events.trigger("restart")
+    Events.trigger("restart");
+    updateComment();
   }
   const reset = () => {
     Game.reset();
