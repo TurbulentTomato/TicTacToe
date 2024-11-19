@@ -165,6 +165,54 @@ h1 {
       color: #fff;
     }
   }
+
+  dialog {
+    margin: auto;
+    width: clamp(300px, 60vw, 600px);
+    font-size: 120%;
+    border-radius: 1rem;
+    border: none;
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+
+      p {
+        font-weight: bold;
+      }
+
+      input {
+        display: block;
+        padding: 0 5px;
+        border: 2px solid black;
+        border-radius: 5px;
+
+        &:focus,
+        &:hover {
+          outline: none;
+          border: 2px solid blue;
+          box-shadow: 0 2px 4px #888;
+        }
+      }
+
+      .submit-btn {
+        background-color: green;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+
+        &:hover {
+          box-shadow: 0 2px 4px #888;
+        }
+      }
+    }
+
+    &::backdrop {
+      backdrop-filter: blur(2px);
+    }
+  }
 }
 
 footer {
