@@ -93,6 +93,8 @@ h1 {
   letter-spacing: 0.4ch;
   font-family: "SourGummy";
   font-size: 45px;
+  text-shadow: 5px 3px 5px #888;
+  text-decoration: underline double;
 }
 
 .container {
@@ -163,6 +165,25 @@ h1 {
       border-radius: 12px;
       font-size: clamp(40px, 8vw, calc(700px/7.5));
       color: #fff;
+    }
+
+    .cell.p1-clicked {
+      background-color: rgb(0, 255, 0);
+
+    }
+
+    .cell.p2-clicked {
+      background-color: #14f7ff;
+    }
+
+    .cell.p1-clicked,
+    .cell.p2-clicked {
+      border: none;
+
+      &:hover {
+        translate: none;
+        box-shadow: none;
+      }
     }
   }
 
@@ -241,4 +262,14 @@ button,
 
 button:active {
   color: white;
+}
+
+div.cell.clicked {
+  transition: 200ms ease-out;
+  background-color: red;
+
+  &:hover {
+    translate: 0;
+    box-shadow: none;
+  }
 }
