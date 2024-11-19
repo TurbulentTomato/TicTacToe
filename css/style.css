@@ -202,6 +202,7 @@ h1 {
         color: #fff;
         border: none;
         border-radius: 8px;
+        height: 40px;
 
         &:hover {
           box-shadow: 0 2px 4px #888;
