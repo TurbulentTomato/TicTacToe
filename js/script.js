@@ -48,7 +48,8 @@ const Game = (function() {
         }
         toggleEnded();
         matchWon = true;
-        Events.trigger("increaseScore");
+        activePlayer.increaseScore();
+        DomHandler.updateScore(activePlayer.getPlayerName(), activePlayer.getPlayerScore())
       }
     }
     if (Gameboard.getIndicesFilled() === 9 && !matchWon) {
@@ -76,7 +77,7 @@ const Game = (function() {
     ended = false;
     matchWon = false;
     Events.trigger("gameReset");
-    Events.trigger("updateScore", "reset");;
+    DomHandler.updateScore();
   };
   const restart = () => {
     ended = false;
@@ -92,7 +93,7 @@ const Game = (function() {
       return;
     }
     Gameboard.add(activePlayer.getPlayerToken(), index);
-    Events.trigger("setPlayedIndices", index);
+    activePlayer.setPlayedIndices(index);
     let playedIndices = activePlayer.getPlayedIndices();
     checkResult(playedIndices);
     Events.trigger("toggleTurn");
@@ -147,15 +148,12 @@ function createPlayer(playerName, playerToken, playerTurn = false) {
   const increaseScore = () => {
     if (playerTurn) {
       score++;
-      Events.trigger("updateScore", { score, playerName })
     }
   }
   Events.subscribe("gameReset", reset);
   Events.subscribe("toggleTurn", toggleTurn);
-  Events.subscribe("setPlayedIndices", setPlayedIndices)
-  Events.subscribe("increaseScore", increaseScore)
   Events.subscribe("restart", restart)
-  return { getPlayerTurn, getPlayerToken, getPlayedIndices, getPlayerName, getPlayerScore };
+  return { getPlayerTurn, getPlayerToken, getPlayedIndices, getPlayerName, getPlayerScore, increaseScore, setPlayedIndices };
 }
 
 const DomHandler = (function() {
@@ -185,17 +183,17 @@ const DomHandler = (function() {
   const updateComment = () => {
     commentEl.textContent = Game.getResult();
   }
-  const updateScore = (scoreObj) => {
-    if (scoreObj === "reset") {
+  const updateScore = (playerName = null, score) => {
+    if (!playerName) {
       playerScoreEl[0].textContent = 0;
       playerScoreEl[1].textContent = 0;
       return;
     }
-    if (scoreObj.playerName === document.querySelector(".name").textContent) {
-      playerScoreEl[0].textContent = scoreObj.score;
+    if (playerName === document.querySelector(".name").textContent) {
+      playerScoreEl[0].textContent = score;
       return;
     }
-    playerScoreEl[1].textContent = scoreObj.score;
+    playerScoreEl[1].textContent = score;
   }
   const restart = () => {
     if (Gameboard.getIndicesFilled() > 0 &&
@@ -226,8 +224,7 @@ const DomHandler = (function() {
       settingsModal.showModal();
     });
   }
-  Events.subscribe("updateScore", updateScore)
-  return { createBoard, bindEvents };
+  return { createBoard, bindEvents, updateScore };
 })();
 
 DomHandler.createBoard();
