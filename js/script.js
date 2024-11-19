@@ -142,6 +142,9 @@ function createPlayer(playerName, playerToken, playerTurn = false) {
   const getPlayerName = () => {
     return playerName;
   }
+  const setPlayerName = (newName) => {
+    playerName = newName;
+  }
   const getPlayerScore = () => {
     return score;
   }
@@ -153,7 +156,7 @@ function createPlayer(playerName, playerToken, playerTurn = false) {
   Events.subscribe("gameReset", reset);
   Events.subscribe("toggleTurn", toggleTurn);
   Events.subscribe("restart", restart)
-  return { getPlayerTurn, getPlayerToken, getPlayedIndices, getPlayerName, getPlayerScore, increaseScore, setPlayedIndices };
+  return { getPlayerTurn, getPlayerToken, getPlayedIndices, getPlayerName, getPlayerScore, increaseScore, setPlayedIndices, setPlayerName };
 }
 
 const DomHandler = (function() {
@@ -164,6 +167,11 @@ const DomHandler = (function() {
   const resetBtn = document.querySelector(".reset-btn");
   const settingsBtn = document.querySelector(".settings-btn");
   const settingsModal = document.querySelector(".settings");
+  const submitBtn = document.querySelector(".submit-btn");
+  const p1NameInput = document.querySelector("#p1-name-input");
+  const p2NameInput = document.querySelector("#p2-name-input");
+  const p1NameEl = document.querySelector(".p1 .name");
+  const p2NameEl = document.querySelector(".p2 .name");
   const createBoard = () => {
     let i = 0;
     let board = "";
@@ -195,6 +203,30 @@ const DomHandler = (function() {
     }
     playerScoreEl[1].textContent = score;
   }
+  const clearNameInputs = () => {
+    p1NameInput.value = "";
+    p2NameInput.value = "";
+  }
+  const updateNames = () => {
+    if (p1NameInput.value === p2NameInput.value && p1NameInput.value !== "" || player1.getPlayerName() === p2NameInput.value || player2.getPlayerName() === p1NameInput.value) {
+      alert("Both Players cannot have same name (you can change the case of letter(s))");
+      return;
+    }
+    if (p1NameInput.value) {
+      player1.setPlayerName(p1NameInput.value);
+      p1NameEl.textContent = p1NameInput.value;
+    }
+    if (p2NameInput.value) {
+      player2.setPlayerName(p2NameInput.value);
+      p2NameEl.textContent = p2NameInput.value;
+    }
+  }
+  const submitForm = (event) => {
+    event.preventDefault();
+    updateNames();
+    clearNameInputs();
+    settingsModal.close();
+  }
   const restart = () => {
     if (Gameboard.getIndicesFilled() > 0 &&
       !Game.getEnded() &&
@@ -223,6 +255,7 @@ const DomHandler = (function() {
     settingsBtn.addEventListener("click", () => {
       settingsModal.showModal();
     });
+    submitBtn.addEventListener("click", submitForm);
   }
   return { createBoard, bindEvents, updateScore };
 })();
