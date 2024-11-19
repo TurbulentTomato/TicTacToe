@@ -227,6 +227,15 @@ const DomHandler = (function() {
     clearNameInputs();
     settingsModal.close();
   }
+  const changeCellColor = (cell) => {
+    if (player1.getPlayerTurn()) {
+      cell.classList.toggle("p2-clicked")
+      cell.style.boxShadow = "0px 0px 10px 2px #14f7ff";
+    } else {
+      cell.classList.toggle("p1-clicked")
+      cell.style.boxShadow = "0px 0px 10px 3px rgb(0, 255, 0)";
+    }
+  }
   const restart = () => {
     if (Gameboard.getIndicesFilled() > 0 &&
       !Game.getEnded() &&
@@ -248,6 +257,7 @@ const DomHandler = (function() {
         Game.playMove(Number(event.target.dataset["index"]));
         renderToken(event, Number(event.target.dataset["index"]));
         updateComment();
+        changeCellColor(event.target);
       }
     })
     restartBtn.addEventListener("click", restart)
