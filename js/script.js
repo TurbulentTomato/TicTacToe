@@ -164,6 +164,8 @@ const DomHandler = (function() {
   const playerScoreEl = Array.from(document.querySelectorAll(".name+span"));
   const restartBtn = document.querySelector(".restart-btn");
   const resetBtn = document.querySelector(".reset-btn");
+  const settingsBtn = document.querySelector(".settings-btn");
+  const settingsModal = document.querySelector(".settings");
   const createBoard = () => {
     let i = 0;
     let board = "";
@@ -220,6 +222,9 @@ const DomHandler = (function() {
     })
     restartBtn.addEventListener("click", restart)
     resetBtn.addEventListener("click", reset)
+    settingsBtn.addEventListener("click", () => {
+      settingsModal.showModal();
+    });
   }
   Events.subscribe("updateScore", updateScore)
   return { createBoard, bindEvents };
